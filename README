@@ -1,0 +1,56 @@
+This assignment is submitted by Kushal Babel(1405022) and Amey Gupta (1405026) for the socket programming assignment.
+
+LIST OF RELEVANT FILES :
+---------------------------------------------------------
+makefile - has defaault and clean targets, the default target makes the executables in the exec folder.
+
+result.jpg - The plot of time v/s number of workers for different length of passwords
+
+
+documentation.txt - Contains the entire documentation of code including the ideation 
+
+exec/user - this executable is for the server. 
+
+exec/user - this executable is for the user which provides the crypted password
+
+exec/worker - this executable is for the workers which are nothing but dumb computational machines.
+
+src folder contains the source codes corresponding to all the executables
+
+data folder contains the average time for passwords corresponding to 6,7 and 8 lengths. 
+
+scripts folder contains the scripts for plotting the graph, and a script run.sh for cracking the passwords present in 6.txt, 7.txt and 8.txt. The average.py file computes the average time for a given worker and for a given length of the password by simply averaging over the time obtained by run.sh
+
+RUNNING INSTRUCTIONS
+---------------------------------------------
+run make in the main directory to generate all the executables in the exec folder.
+
+The user executable must be run as : time ./user <server ip> <server-port> <hash> <passwd-length> <binary-string>
+
+The server executable must be run as : ./server <server-port> 
+
+The worker executable must be run as : ./worker server ip> <server-port> 
+
+Run make clean in the main directory to delete all the executables.
+
+Precautions
+------------------------------------------
+The server must be started before everything.
+
+The workers must be connected before a user sends some query for cracking the password.
+
+The length of the password must not be greater than 8 characters.
+
+Main Highlights
+---------------------------------------
+Can work for more than 5 workers and 3 users but cant handle very large numbers due to backlog limit.
+
+The user queries are stored in a queue to maintain fairness.
+
+User is informed as soon as the password is cracked.
+
+The work is divided into many small works, and everytime a worker is free, it is assigned some quantum  from the large set.
+
+
+
+

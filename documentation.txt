@@ -1,0 +1,59 @@
+The concept of searchspace is as follows : 
+The characters in the password can take any character from this searchspace. The searchspace is decided on the basis of binary string, aka type provided by the user. Every character in the searchspace is characterised by an index which is a 2 character long string. For example, if the searchspace is from 0-9 and A-Z, then the index varies from "00" to "35".
+
+FRONT END (Socket Programming part)
+---------------------------------------------------------------
+User-Server Communication
+
+Here we assume that workers are connected beforehand of connecting the user
+User first connects to the server using the server's ip address as provided in the arguments.
+Eg. ./user.out 10.105.12.37 5000 aa4nDSRtueWTg 8 100
+
+On establishing connection user sends a greeting message : ',u' to the server.
+This lets the server know that the client on this socket is a User.
+
+User then sends the query that is the hash and the information to be cracked in following format : "target,pwd_length,type;"
+Where ',' is uses as delimiter and ';' is used to denote end of information.
+User then waits for Server's reply i.e the Cracked Password.
+
+Worker-Server Communication
+
+Worker first connects to the server using the server's ip address as provided in the arguments.
+Eg. ./user.out 10.105.12.37 5000
+On establishing connection user sends a greeting message : ',w' to the server.
+This lets the server know that the client on this socket is a Worker.
+
+The worker then waits for server to send it work.
+Server sends the work information in following format : "type,target,pwd_length,currAssignedWork.start,currAssignedWork.end;"
+Where ',' is uses as delimiter and ';' is used to denote end of information and, currAssignedWork.start and currAssignedWork.end let the worker know from where to where it has to check for passwords.
+
+Worker then processes the received work and replies to the server at the end.
+If password has been cracked the reply to server is : "1,crackedPassword"
+otherwise the reply is : "0,"
+
+BACK - END (Logic for interaction of messages and work assignment)
+-------------------------------------------
+
+USER : 
+
+The user send the inputs to the target in the encoded form( separated by commas)
+As soon as the cracked password is received, it is printed on the terminal.
+
+
+
+WORKER : 
+
+The worker is assigned to match the hash with that of the candidate passwords starting from the start string to the end string. The index string corresponding to a contender for the password is obtained by concatenating the index in the searchspace of each character in contender string. We simply iterate from the start string to the end string, find the hash of the contender. If the hash matched then, the worker returns with 1,<cracked-password>; otherwise 0,; 
+
+Server
+
+The Server maintains two sets users and workers which contain the respective socket numbers.
+
+The Server also maintains a Queue called queries.
+When it receives a query from a user it pushes it into the queue.
+
+The Server also contains a map from SocketId to Bool called isFree.
+It stores the information whether a worker is free or not.
+
+At any given point of time, the values stored in global variables correspond to the query in front of the queue.
+So, the server divides the work amongst the free workers and when it finishes that query, it is popped from the queue and then next query is processed.
